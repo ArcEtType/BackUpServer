@@ -9,14 +9,14 @@ const UserSchema = new mongoose.Schema(
             max: 100,
           },
       
-      lastName: {
+    lastName: {
             type: String,
             required: true,
             min: 2,
             max: 100,
           },
       
-      pseudo: {
+    pseudo: {
             type: String,
             required: true,
             min: 2,
