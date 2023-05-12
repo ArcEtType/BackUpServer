@@ -27,9 +27,19 @@ export const getProducts = async (req, res) => {
   }
 };
 
-export const getCustomers = async (req, res) => {
+export const getAllCustomers = async (req, res) => {
   try {
     const customers = await User.find().select("-password");
+    res.status(200).json(customers);
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+
+export const getCustomers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const customers = await User.find(id).select("-password");
     res.status(200).json(customers);
   } catch (error) {
     res.status(404).json({ message: error.message });
