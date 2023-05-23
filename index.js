@@ -5,30 +5,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-import clientRoutes from "./routes/client.js";
-import generalRoutes from "./routes/general.js";
-import managementRoutes from "./routes/management.js";
-import salesRoutes from "./routes/sales.js";
 
-import authRoutes from "./routes/auth.js";
-import { register } from "./controllers/auth.js";
-import { verifyToken } from "./middleware/auth.js";
+import userRoutes from "./routes/user.js";
+import productRoutes from "./routes/product.js"
 
-// data imports
-import User from "./models/User.js";
-import Product from "./models/Product.js";
-import ProductStat from "./models/ProductStat.js";
-import Transaction from "./models/Transaction.js";
-import OverallStat from "./models/OverallStat.js";
-import AffiliateStat from "./models/AffiliateStat.js";
-import {
-  dataUser,
-  dataProduct,
-  dataProductStat,
-  dataTransaction,
-  dataOverallStat,
-  dataAffiliateStat,
-} from "./data/index.js";
+
+
 
 /* CONFIGURATION */
 dotenv.config();
@@ -41,35 +23,35 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+
 /* ROUTES */
-app.use("/client", clientRoutes); //info des Users
-app.use("/general", generalRoutes);
-app.use("/management", managementRoutes);
-app.use("/sales", salesRoutes);
-
-/* ROUTES LOGIN */
-app.use("/auth", authRoutes);
-
-/* ROUTES WITH FILES */
-app.post("/auth/register", register);
-
+app.use("/user", userRoutes);
+app.use("/product", productRoutes);
 
 /* MONGOOSE SETUP */
+
 const PORT = process.env.PORT || 9000;
+
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    const db = mongoose.connection;
+    console.log('Connexion à la base de données réussie.');
 
-    /* ONLY ADD DATA ONE TIME */
-    // AffiliateStat.insertMany(dataAffiliateStat);
-    // OverallStat.insertMany(dataOverallStat);
-    // Product.insertMany(dataProduct);
-    // ProductStat.insertMany(dataProductStat);
-    // Transaction.insertMany(dataTransaction);
-    // User.insertMany(dataUser);
+    const collection = db.collection('users');
+    
+
+    /* SEULEMENT AJOUTER LES DONNÉES UNE FOIS */
+    // collection.insertMany(dataAffiliateStat);
+    // collection.insertMany(dataOverallStat);
+    // collection.insertMany(dataProduct);
+    // collection.insertMany(dataProductStat);
+    // collection.insertMany(dataTransaction);
+    // collection.insertMany(dataUser);
+
+    app.listen(PORT, () => console.log(`Serveur en écoute sur le port : ${PORT}`));
   })
-  .catch((error) => console.log(`${error} did not connect`));
+  .catch((error) => console.log(`${error} n'a pas pu se connecter à la base de données.`));
